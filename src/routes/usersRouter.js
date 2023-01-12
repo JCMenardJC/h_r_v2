@@ -8,7 +8,7 @@ const accessTokenSecret = 'youraccesstokensecret';
 usersRouter.post('/register', async (req, res) => {
     const password = req.body.password;
     const userName = req.body.user_name;
-    
+
 
     bcrypt.hash(password, 10, async (err, hash) => {
         console.log(hash);
@@ -45,8 +45,9 @@ usersRouter.post('/login', async (req, res) => {
                     res.status(200).json({
                         status: 'OK',
                         data: accessToken,
-                        message: 'logged in'})
-                        console.log(accessToken);
+                        message: 'logged in'
+                    })
+                    console.log(accessToken);
                 } else {
                     res.status(401).json({ error: "Incorrect password" });
                 }
