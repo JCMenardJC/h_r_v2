@@ -46,6 +46,7 @@ usersRouter.post('/login', async (req, res) => {
                         status: 'OK',
                         data: accessToken,
                         message: 'logged in'})
+                        console.log(accessToken);
                 } else {
                     res.status(401).json({ error: "Incorrect password" });
                 }

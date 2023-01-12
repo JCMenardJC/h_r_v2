@@ -1,11 +1,14 @@
 const express = require('express')
 const ticketsRouter = express.Router();
-const client = require('../client')
+const client = require('../client');
+const authenticateJWT = require('../../middleware/auth')
 
-ticketsRouter.get('/', async (req, res) => {
+
+ticketsRouter.get('/', authenticateJWT,async (req, res) => {
     try {
         const data = await client.query('SELECT * FROM ticket');
-        console.log(data.rowCount)
+        console.log(data.rowCount);
+        console.log(req.userId);
         res.status(200).json({ status: "SUCCESS", data: data.rows });
     }
     catch (err) {
@@ -13,11 +16,12 @@ ticketsRouter.get('/', async (req, res) => {
         console.log(err.stack)
     }
 });
-ticketsRouter.get('/:id', async (req, res) => {
+ticketsRouter.get('/:id', authenticateJWT, async (req, res) => {
     const id = req.params.id;
     try {
         const data = await client.query('SELECT * FROM ticket where id = $1', [id]);
-        console.log(data.rowCount)
+        console.log(data.rowCount);
+        console.log(req.userId);
 
         if (data.rowCount > 0) { res.status(200).json({ status: "SUCCESS", data: data.rows }); }
 
@@ -29,13 +33,14 @@ ticketsRouter.get('/:id', async (req, res) => {
         res.status(404).json({ status: "404-Not Found", data: null });
     }
 });
-ticketsRouter.post('/', async (req, res) => {
+ticketsRouter.post('/', authenticateJWT,async (req, res) => {
     console.log(req.body);
 
     try {
         const message = req.body.message;
 
         const data = await client.query('INSERT INTO ticket (message) VALUES ($1)', [message]);
+        console.log(req.userId);
 
         res.status(200).json({ status: "SUCCESS", data: data.rows });
     }
@@ -44,10 +49,11 @@ ticketsRouter.post('/', async (req, res) => {
         res.status(404).json({ status: "404-Not Found", data: null })
     }
 });
-ticketsRouter.put('/:id', async (req, res) => {
+ticketsRouter.put('/:id', authenticateJWT,async (req, res) => {
     const id = req.params.id;
     try {
         const data = await client.query('PUT FROM ticket WHERE id = $1', [id]);
+        console.log(req.userId);
 
         res.status(200).json({ status: "SUCCESS", data: data.rows });
     }
@@ -56,10 +62,11 @@ ticketsRouter.put('/:id', async (req, res) => {
         res.status(404).json({ status: "404-Not Found", data: null })
     }
 });
-ticketsRouter.delete('/:id', async (req, res) => {
+ticketsRouter.delete('/:id', authenticateJWT,async (req, res) => {
     const id = req.params.id;
     try {
         const data = await client.query('DELETE FROM ticket WHERE id = $1', [id]);
+        console.log(req.userId);
 
         res.status(200).json({ status: "SUCCESS", data: data.rows });
     }

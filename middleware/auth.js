@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const accessTokenSecret = 'youraccesstokensecret';
+
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -16,3 +19,5 @@ const authenticateJWT = (req, res, next) => {
         res.sendStatus(401);
     }
 };
+
+module.exports = authenticateJWT;
